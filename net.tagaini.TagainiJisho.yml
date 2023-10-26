@@ -1,0 +1,44 @@
+app-id: net.tagaini.TagainiJisho
+runtime: org.kde.Platform
+runtime-version: "5.15-23.08"
+sdk: org.kde.Sdk
+command: tagainijisho
+finish-args:
+  - "--share=ipc"
+  - "--socket=fallback-x11"
+  - "--socket=wayland"
+  - "--device=dri"
+rename-desktop-file: tagainijisho.desktop
+rename-icon: tagainijisho
+modules:
+  - name: tagainijisho
+    builddir: true
+    buildsystem: simple
+    build-commands:
+      - gzip -d 3rdparty/JMdict.gz
+      - gzip -d 3rdparty/kanjidic2.xml.gz
+      - gzip -d 3rdparty/kanjivg.xml.gz
+      - cmake -DCMAKE_INSTALL_PREFIX=/app .
+      - make -j8
+      - make install
+    sources:
+      - type: archive
+        url: https://github.com/Gnurou/tagainijisho/archive/refs/tags/1.2.2.tar.gz
+        sha256: 5c88a81c437492f1835c655851bdb96b83a62efb8a8ddc36e6ee5ea927b45f25
+      - type: archive
+        dest: 3rdparty/sqlite-amalgamation-3400000
+        url: https://www.sqlite.org/2022/sqlite-amalgamation-3400000.zip
+        sha256: 7c23eb51409315738c930a222cf7cd41518ae5823c41e60a81b93a07070ef22a
+      - type: file
+        dest: 3rdparty
+        url: http://ftp.edrdg.org/pub/Nihongo/JMdict.gz
+        sha256: df10913f486c419b7c9c38b51d589994b91fb5ed28469cf9a891709f467fe9b7
+      - type: file
+        dest: 3rdparty
+        url: https://www.edrdg.org/kanjidic/kanjidic2.xml.gz
+        sha256: daa366edd75f69563bdbdbe2067d542924e1ba3504f26a48930084a16ef5bf55
+      - type: file
+        dest: 3rdparty
+        dest-filename: kanjivg.xml.gz
+        url:  https://github.com/KanjiVG/kanjivg/releases/download/r20160426/kanjivg-20160426.xml.gz
+        sha256: b40a474be0936698586a316014314e58d25685a85950175f86e5d843a6fe5ec7
